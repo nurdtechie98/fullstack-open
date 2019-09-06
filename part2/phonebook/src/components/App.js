@@ -2,7 +2,7 @@ import React, { useState ,useEffect } from 'react'
 import Filter from './Filer'
 import PersonForm from './PersonForm'
 import Numbers from './Numbers'
-import axios from 'axios'
+import numberserv from '../number-service'
 
 
 const App = () => {
@@ -12,12 +12,8 @@ const App = () => {
   const [ filterVal, setFilter ] = useState('')
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/numbers')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
+    numberserv.getAll()
+    .then(response=>setPersons(response))
   }
   useEffect(hook,[])
   console.log('render', persons.length, 'person')
@@ -26,13 +22,47 @@ const App = () => {
   }
   const handleNumberChange = (event)=>{
     setNewNumber(event.target.value);
-}
-const handleFilterChange = (event)=>{
+  } 
+  const handleFilterChange = (event)=>{
     setFilter(event.target.value);
-}
+  }
+  const deleteEntry = (id)=>{
+    const current = persons.find(person=>person.id===id)
+    var r = window.confirm(`Are you sure, you want to delete ${current.name} ?`);
+    if(r === true)
+    {
+      numberserv.remove(id)
+      .then(response=>{
+        console.log("===",response)
+        setPersons(persons.filter(person=>person.id!==id))
+      })
+    }
+  }
   const handleSubmit = (event)=>{
       event.preventDefault()
-      persons.find((person)=>person.name===newName)?(alert(`${newName} is already in phonebook`)):(setPersons(persons.concat({name:newName,number:newNumber})))
+      if(persons.find((person)=>person.name===newName))
+      {
+        const current = persons.find(person=>person.name===newName)
+        var r = window.confirm(`Are you sure, you want to update number of ${current.name} ?`);
+        if(r === true)
+        {
+          const newPerson = {name:newName,number:newNumber}
+          numberserv.update(current.id,newPerson)
+          .then(response=>{
+              setPersons(persons.map(person=>(person.id===response.id)?response:person))
+            }
+          )
+        }
+      }
+      else
+      {
+        const newPerson = {name:newName,number:newNumber}
+        numberserv.addNote(newPerson)
+        .then(response=>{
+            setPersons(persons.concat(response))
+          }
+        )
+      }
       setNewName('')
       setNewNumber('')
   }
@@ -43,7 +73,7 @@ const handleFilterChange = (event)=>{
       <h2> add new </h2>
       <PersonForm handleSubmit={handleSubmit} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Numbers persons={persons} filterVal={filterVal} />
+      <Numbers persons={persons} filterVal={filterVal} deleteEntry={deleteEntry} />
     </div>
   )
 }

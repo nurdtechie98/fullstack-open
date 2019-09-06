@@ -32,6 +32,7 @@
     <li> <a href="./part2/course-content">excercise 2.1-2.5</a> </li>
     <li> <a href="./part2/phonebook">excercise 2.6-2.11</a> </li>
     <li> <a href="./part2/data_for_countries">excercise 2.12-2.14</a> </li>
+    <li> <a href="./part2/phonebook">excercise 2.15-2.18</a> </li>
   </ul>
 </details>
   
