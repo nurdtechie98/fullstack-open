@@ -9,18 +9,23 @@ const getAll = () =>(
     .catch(error=>console.log(error))
 )
 
-const remove = id =>( 
+const remove = (id) =>( 
     axios
     .delete(baseUrl+"/"+id)
     .then(response=>response.data)
-    .catch(error=>console.log(error))
+    .catch(error=>{
+        console.log("errored")
+        console.log(error)
+    })
 )
 
 const update = (id,number) =>( 
     axios
     .put(baseUrl+"/"+id,number)
     .then(response=>response.data)
-    .catch(error=>console.log(error))
+    .catch(error=>{
+        console.log(error)
+    })
 )
 
 const addNote = (numbers) =>{

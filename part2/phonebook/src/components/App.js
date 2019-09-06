@@ -3,6 +3,7 @@ import Filter from './Filer'
 import PersonForm from './PersonForm'
 import Numbers from './Numbers'
 import numberserv from '../number-service'
+import Message from './Message'
 
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterVal, setFilter ] = useState('')
+  const [ message, setMessage ] = useState(['',false])
   const hook = () => {
     console.log('effect')
     numberserv.getAll()
@@ -33,7 +35,11 @@ const App = () => {
     {
       numberserv.remove(id)
       .then(response=>{
-        console.log("===",response)
+        console.log("*****",response,"****")
+        if(typeof(response)==='undefined')
+        setMessage(["Number already deleted, please refresh to reflect",false])
+        else
+        setMessage(["Deleted entry",true])
         setPersons(persons.filter(person=>person.id!==id))
       })
     }
@@ -49,7 +55,12 @@ const App = () => {
           const newPerson = {name:newName,number:newNumber}
           numberserv.update(current.id,newPerson)
           .then(response=>{
+              if(typeof(response)==='undefined')
+              setMessage(["Number already deleted, please refresh to reflect",false])
+              else
+              setMessage(["Added entry "+current.name,true])
               setPersons(persons.map(person=>(person.id===response.id)?response:person))
+              
             }
           )
         }
@@ -60,6 +71,7 @@ const App = () => {
         numberserv.addNote(newPerson)
         .then(response=>{
             setPersons(persons.concat(response))
+            setMessage(["Added entry "+newName,true])
           }
         )
       }
@@ -69,6 +81,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message message={message}/>
       <Filter filterVal={filterVal} handleFilterChange={handleFilterChange} />
       <h2> add new </h2>
       <PersonForm handleSubmit={handleSubmit} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
