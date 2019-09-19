@@ -36,4 +36,9 @@
     <li> <a href="./part2/phonebook">excercise 2.19-2.20</a> </li>
   </ul>
 </details>
+<details><summary><a href="./part2">Part 3</a></summary>
+  <ul>
+    <li> <a href="./part3">excercise 3.1-3.6</a> </li>
+  </ul>
+</details>
   
