@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = "http://localhost:3001/numbers"
+const baseUrl = "/api/persons"
 
 const getAll = () =>( 
     axios
@@ -21,7 +21,7 @@ const remove = (id) =>(
 
 const update = (id,number) =>( 
     axios
-    .put(baseUrl+"/"+id,number)
+    .put(baseUrl+"/"+id,{"numbers":number})
     .then(response=>response.data)
     .catch(error=>{
         console.log(error)
@@ -32,7 +32,7 @@ const addNote = (numbers) =>{
     console.log(numbers);
     return(
     axios
-    .post(baseUrl,numbers)
+    .post(baseUrl,{"numbers":numbers})
     .then(response=>response.data)
     .catch(error=>console.log(error))
     )

@@ -1,5 +1,5 @@
 {
-  "name": "part1",
+  "name": "phonebook",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -32,5 +32,6 @@
   },
   "devDependencies": {
     "json-server": "^0.15.1"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }

@@ -46,6 +46,7 @@ const App = () => {
   }
   const handleSubmit = (event)=>{
       event.preventDefault()
+      console.log("handle submit")
       if(persons.find((person)=>person.name===newName))
       {
         const current = persons.find(person=>person.name===newName)
