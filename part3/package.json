@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch":"nodemon app.js"
+    "watch": "nodemon app.js"
   },
   "author": "nurdtechie98",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"

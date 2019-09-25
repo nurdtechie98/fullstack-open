@@ -1,9 +1,18 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
-
+morgan.token('data',(request)=>{
+    if(request.method=='POST')
+    return "::"+JSON.stringify(request.body.numbers)
+    else
+    return "::"
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
+app.use(cors())
 let numbers = [
     {
       id: 1,
@@ -67,6 +76,7 @@ const generateId = ()=>{
     return Math.floor((Math.random()*5000000)+1)
 }
 app.post('/api/persons',(request,response)=>{
+    console.log("Posssttteeedd")
     body = request.body;
     if (!body.numbers) {
         return response.status(400).json({ 
@@ -96,7 +106,7 @@ app.post('/api/persons',(request,response)=>{
     response.json(number);
 })
 
-const PORT = 3001
-app.listen(3001,()=>{
-    console.log(`Listenig to port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT,()=>{
+    console.log(`Listening to port ${PORT}`)
 })
