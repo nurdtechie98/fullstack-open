@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 const Contact = require('./models/contact')
+const mongoose = require('mongoose')
 
 app.use(bodyParser.json())
 morgan.token('data',(request)=>{
@@ -42,7 +43,7 @@ let numbers = [
 
 app.get('/api/persons',(request,response)=>{
     Contact.find({}).then(result=>{
-        response.json(result.map(contact => contact.toJSON()));
+        response.json(result.map(contact => contact.toJSON()))
     })
 })
 
@@ -54,29 +55,27 @@ app.get('/info',(request,response)=>{
             `<p>Phonebook has info for ${result.length} people</p>
             ${d}
             `
-        );
+        )
     })
 })
 
 app.get('/api/persons/:id',(request,response)=>{
-    const id = Number(request.params.id);
-    const number = numbers.find(number=>number.id===id);
-    if(number)
-    response.json(number);
-    else
-    response.status(404).end();
+    const id = mongoose.Types.ObjectId(request.params.id) 
+    console.log(id)
+    Contact.find({_id:id}).then(result=>{
+        if(result)
+        response.json(result[0])
+        else
+        response.status(404).end()
+    })
 })
 
 app.delete('/api/persons/:id',(request,response)=>{
-    const id = Number(request.params.id);
-    const number = numbers.find(number=>number.id===id);
-    if(number)
-    {
-        numbers = numbers.filter(number=>number.id!==id);
-        response.status(204).end();
-    }
-    else
-    response.status(404).end();
+    Contact.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons',(request,response)=>{
@@ -114,6 +113,33 @@ app.post('/api/persons',(request,response)=>{
         response.json(result.toJSON());
     })
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+  
+    const contact = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+      .then(updatedContact => {
+        response.json(updatedContact.toJSON())
+      })
+      .catch(error => next(error))
+})
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(error)
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT,()=>{
