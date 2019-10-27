@@ -39,6 +39,8 @@
 <details><summary><a href="./part2">Part 3</a></summary>
   <ul>
     <li> <a href="./part3">excercise 3.1-3.6</a> </li>
+    <li> <a href="./part3">excercise 3.7-3.8</a> </li>
+     <li> <a href="./part3">excercise 3.9-3.11</a> </li>
   </ul>
 </details>
   
