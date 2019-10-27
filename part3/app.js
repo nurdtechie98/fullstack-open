@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Contact = require('./models/contact')
 
 app.use(bodyParser.json())
 morgan.token('data',(request)=>{
@@ -39,17 +41,21 @@ let numbers = [
 
 
 app.get('/api/persons',(request,response)=>{
-    response.json(numbers);
+    Contact.find({}).then(result=>{
+        response.json(result.map(contact => contact.toJSON()));
+    })
 })
 
 app.get('/info',(request,response)=>{
     var d = Date(Date.now()); 
     d = d.toString();
-    response.send(
-        `<p>Phonebook has info for ${numbers.length} people</p>
-        ${d}
-        `
-    );
+    Contact.find({}).then(result=>{
+        response.send(
+            `<p>Phonebook has info for ${result.length} people</p>
+            ${d}
+            `
+        );
+    })
 })
 
 app.get('/api/persons/:id',(request,response)=>{
@@ -73,9 +79,6 @@ app.delete('/api/persons/:id',(request,response)=>{
     response.status(404).end();
 })
 
-const generateId = ()=>{
-    return Math.floor((Math.random()*5000000)+1)
-}
 app.post('/api/persons',(request,response)=>{
     console.log("Posssttteeedd")
     body = request.body;
@@ -95,16 +98,21 @@ app.post('/api/persons',(request,response)=>{
           error: 'number missing' 
         })
     }
-    const already_number = numbers.find(already_number=>already_number.name===number.name);
-    if(already_number)
-    {
-        return response.status(400).json({ 
-            error: 'name must be unique' 
-        })
-    }
-    number.id = generateId();
-    numbers = numbers.concat(number);
-    response.json(number);
+    Contact.find({number:number.number}).then(result=>{
+        if(result.length!==0)
+        {
+            return response.status(400).json({ 
+                error: 'number must be unique' 
+            })
+        }
+    })
+    const contact = new Contact({
+        name:number.name,
+        number:number.number
+    })
+    contact.save().then(result=>{
+        response.json(result.toJSON());
+    })
 })
 
 const PORT = process.env.PORT || 3001
