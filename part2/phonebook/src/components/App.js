@@ -71,8 +71,15 @@ const App = () => {
         const newPerson = {name:newName,number:newNumber}
         numberserv.addNote(newPerson)
         .then(response=>{
-            setPersons(persons.concat(response))
-            setMessage(["Added entry "+newName,true])
+            console.log(response)
+            if(response!==undefined)
+            {
+              console.log("trying to add person")
+              setPersons(persons.concat(response))
+              setMessage(["validation error",false])
+            }
+            else
+            setMessage([response,true])
           }
         )
       }
