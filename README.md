@@ -45,6 +45,7 @@
     <li> <a href="./part3">excercise 3.15-3.18</a> </li>
     <li> <a href="./part3">excercise 3.19-3.21</a> </li>
     <li> <a href="./part3">excercise 3.22</a> </li>
+    <li> <a href="https://x-ample.herokuapp.com/">Hosted Link on Heroku</a> </li>
   </ul>
 </details>
   
